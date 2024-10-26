@@ -148,7 +148,7 @@ function VehicleUsageForm() {
         <div className="mb-4">
         <label htmlFor="mileage"
                 className="block text-gray-700 font-sora">
-                Mileage
+                Distance travelled
           </label>
         <input
           type="number"
