@@ -1,5 +1,8 @@
 # Getting Started with Create React App
 
+App Link: [Netlify](https://terratrace.netlify.app/)
+Pitch Desk: [Canva](https://www.canva.com/design/DAGUozyrjtQ/B3u5apvKLXhLcZwSrRBJdw/view?utm_content=DAGUozyrjtQ&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
