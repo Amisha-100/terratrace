@@ -142,18 +142,6 @@ function ElectricityUsageForm() {
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="mb-4">
-            <label htmlFor="value" className="block text-gray-700 font-sora">
-              Enter value
-            </label>
-            <input
-              type="number"
-              id="value"
-              value={electricityUsage}
-              onChange={(e) => setElectricityUsage(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
 
           <div className="mb-4">
             <label htmlFor="unit" className="block text-gray-700 font-sora">
@@ -168,6 +156,18 @@ function ElectricityUsageForm() {
               <option value="kWh">kWh</option>
               <option value="MWh">MWh</option>
             </select>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="value" className="block text-gray-700 font-sora">
+              Enter value
+            </label>
+            <input
+              type="number"
+              id="value"
+              value={electricityUsage}
+              onChange={(e) => setElectricityUsage(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
           </div>
 
           <button

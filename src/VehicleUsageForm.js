@@ -85,7 +85,6 @@ function VehicleUsageForm() {
           value={distanceValue}
           onChange={(e) => setDistanceValue(e.target.value)}
           className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-     //   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>
         <button
