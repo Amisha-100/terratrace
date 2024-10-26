@@ -77,6 +77,7 @@ const Results = () => {
                 __html: ('##' + section)
                   .replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>')
                   .replace(/## (.*?)\n/g, '<h2 class="text-xl font-bold mb-3">$1</h2>')
+                  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 underline">$1</a>')
                   .replace(/\* (.*?)(?=\n|$)/g, '<p class="text-sm mb-2">• $1</p>')
               }} />
             </div>

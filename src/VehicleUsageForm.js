@@ -64,8 +64,8 @@ function VehicleUsageForm() {
         <form onSubmit={handleSubmit} className="flex flex-col mb-4">
         <div className="mb-4">
         <label htmlFor="mileage"
-                className="block text-gray-700 font-sora">
-                Unit of Distance
+              className="block text-gray-700 font-sora">
+              Unit of Distance
           </label>
          <select
           value={distanceUnit}
@@ -80,7 +80,8 @@ function VehicleUsageForm() {
                 className="block text-gray-700 font-sora">
                 Mileage
           </label>
-        <textarea
+        <input
+          type="number"
           placeholder="Enter distance travelled (e.g., 1000)"
           value={distanceValue}
           onChange={(e) => setDistanceValue(e.target.value)}
