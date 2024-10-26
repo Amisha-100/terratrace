@@ -1,46 +1,44 @@
 const { GoogleGenerativeAI } = await import("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-
 const generateRecommendations = async (electricityScore, vehicleScore, flightScore) => {
-  const prompt = `You are an environmentalist. I will give you the carbon footprint score of Electricity, Vehicle, and Flights. The carbon footprint score of Electricity is ${electricityScore}, Vehicle is ${vehicleScore}, and Flights is ${flightScore}. Generate the most valid recommendations to reduce these carbon footprints and also generate viable ways to reduce the carbon footprint.`;
+  const vehiclePrompt = vehicleScore === 0 ? `
+## 🚗 Vehicle (Score: ${vehicleScore})
+
+**Excellent work!** Your vehicle score shows you're making sustainable transportation choices.
+
+* **Keep it up!** Continue your current eco-friendly transportation habits.
+* Consider an **electric vehicle** for any future car needs.` 
+  : `[Assessment of vehicle score, followed by 3-4 bullet points with recommendations, using similar formatting with bold terms]`;
+
+  const prompt = `Based on these carbon footprint scores, provide recommendations:
+    - Electricity: ${electricityScore}
+    - Vehicle: ${vehicleScore}
+    - Flight: ${flightScore}
+
+    Format as follows (exactly):
+
+## 🔋 Electricity (Score: ${electricityScore})
+
+Your electricity score is **above average**, meaning you have room for improvement to reduce your carbon footprint. Here are some recommendations:
+
+* **Switch to a renewable energy provider.** Many utilities offer plans powered by **solar, wind, or hydro**. This directly reduces your reliance on fossil fuels.
+* **Upgrade your appliances.** Older appliances use **more energy** than modern, energy-efficient models. Look for **Energy Star** labels when replacing your refrigerator, washer, dryer, or other appliances.
+* **Reduce your energy consumption.** Turn off lights when leaving a room, unplug unused electronics, and use **energy-saving bulbs**.
+* **Use smart power strips.** These turn off electronics when not in use, preventing **phantom energy consumption**.
+
+${vehiclePrompt}
+
+## ✈️ Flight (Score: ${flightScore})
+
+[Assessment of flight score, followed by 3-4 bullet points with recommendations, using similar formatting with bold terms]`;
 
   const result = await model.generateContent(prompt);
   const recommendations = result.response.text();
 
-  return recommendations
+  return recommendations;
 };
-
-
-// const generateImages = async (recommendations) => {
-//   const imagePrompts = [];
-
-//   // Assuming recommendations are in a list or array
-//   for (const recommendation of recommendations) {
-//     // Extract keywords for image generation
-//     const keywords = recommendation.split(" ");
-
-//     // Construct image prompt
-//     let imagePrompt = "";
-//     keywords.forEach(keyword => {
-//       imagePrompt += keyword + " ";
-//     });
-
-//     imagePrompts.push(imagePrompt);
-//   }
-
-//   // Generate images using Gemini
-//   const images = await model.generateImages({
-//     prompts: imagePrompts,
-//     imageGenerationUsecase: "alternatives",
-//   });
-
-//   return images;
-// };
-
-
-// const images = await generateImages(recommendations);
 
 export default generateRecommendations;

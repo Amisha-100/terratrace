@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 function FlightUsageForm() {
   const [flightPassenger, setFlightPassenger] = useState('');
   const [flightCarbonFootprint, setFlightCarbonFootprint] = useState(null);
-  const navigate = useNavigate(); // useNavigate hook for navigation
   const location = useLocation();
-  const { electricCarbonFootprint, vehicleCarbonFootprint } = location.state || {};  // Access the passed state
+  const navigate = useNavigate();
+  const { electricCarbonFootprint, vehicleCarbonFootprint } = location.state || {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +47,8 @@ function FlightUsageForm() {
           navigate('/results', { state: { electricCarbonFootprint: electricCarbonFootprint,
               vehicleCarbonFootprint: vehicleCarbonFootprint, 
               flightCarbonFootprint: carbonFootprint
-           } });
+            }
+          });
       } else {
           console.error("Unexpected API response structure", result);
       }
@@ -56,6 +57,7 @@ function FlightUsageForm() {
         console.error(error);
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -84,11 +86,6 @@ function FlightUsageForm() {
             Calculate Carbon Footprint
           </button>
         </form>
-        {/* {flightCarbonFootprint && (
-        <div className="mt-4">
-          <p>Your estimated carbon footprint is: {flightCarbonFootprint} + {electricCarbonFootprint} + {vehicleCarbonFootprint} MT CO2e</p>
-        </div>
-      )} */}
       </div>
     </div>
   );
