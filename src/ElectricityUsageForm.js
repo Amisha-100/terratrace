@@ -138,7 +138,7 @@ function ElectricityUsageForm() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 font-sora">
-          Your electricity usage
+          Your electricity Usage (Yearly)
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
