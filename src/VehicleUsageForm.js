@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function VehicleUsageForm() {
     const [distanceValue, setDistanceValue] = useState(0.0);
     const [distanceUnit, setDistanceUnit] = useState('km');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [vehicleCarbonFootprint, setVehicleCarbonFootprint] = useState(null);
     const navigate = useNavigate(); // useNavigate hook for navigation
     const location = useLocation();
@@ -61,6 +64,73 @@ function VehicleUsageForm() {
                 <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 font-sora">
                     Vehicle Usage (Yearly)
                 </h2>
+        <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload Fuel Receipt (Optional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setSelectedFile(file);
+                setIsProcessing(true);
+                
+                try {
+                  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
+                  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+                  const reader = new FileReader();
+                  reader.onloadend = async () => {
+                    const imageUrl = reader.result;
+                    
+                    // For now, extract basic info from a sample receipt
+                    // This is a placeholder until we implement proper OCR
+                    const testData = {
+                      liters: 45,
+                      pricePerLiter: 1.5,
+                      // Assuming average fuel efficiency of 12 km/L
+                      estimatedDistance: 45 * 12
+                    };
+                    
+                    setDistanceValue(testData.estimatedDistance);
+                    setDistanceUnit('km');
+                    
+                    // TODO: Implement proper OCR using a dedicated service to:
+                    // 1. Extract fuel quantity
+                    // 2. Calculate distance based on average fuel efficiency
+                    // 3. Track multiple receipts for better accuracy
+                    
+                    // TODO: Replace with actual OCR implementation
+                    const text = "Sale";
+                    
+                    // Simple parsing - enhance this based on actual response format
+                    const match = text.match(/(\d+\.?\d*)\s*(km|mi)/i);
+                    if (match) {
+                      setDistanceValue(match[1]);
+                      setDistanceUnit(match[2].toLowerCase());
+                    }
+                  };
+                  reader.readAsDataURL(file);
+                } catch (error) {
+                  console.error('Error processing image:', error);
+                } finally {
+                  setIsProcessing(false);
+                }
+              }
+            }}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-green-50 file:text-green-700
+              hover:file:bg-green-100"
+          />
+          {isProcessing && (
+            <p className="mt-2 text-sm text-gray-500">Processing receipt...</p>
+          )}
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col mb-4">
         <div className="mb-4">
         <label htmlFor="mileage"

@@ -84,10 +84,13 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function ElectricityUsageForm() {
   const [electricityUsage, setElectricityUsage] = useState('100');
   const [electricityUnit, setElectricityUnit] = useState('kWh');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [electricCarbonFootprint, setElectricCarbonFootprint] = useState(null);
   const navigate = useNavigate();
 
@@ -141,6 +144,71 @@ function ElectricityUsageForm() {
           Your electricity Usage (Yearly)
         </h2>
 
+        <div className="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Upload Electricity Bill (Optional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setSelectedFile(file);
+                setIsProcessing(true);
+                
+                try {
+                  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY);
+                  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+                  const reader = new FileReader();
+                  reader.onloadend = async () => {
+                    const imageUrl = reader.result;
+                    
+                    // For now, use a simple regex to extract numbers followed by kWh/MWh
+                    // This is a placeholder until we implement proper OCR
+                    const testData = "Your electricity usage: 450 kWh";
+                    const match = testData.match(/(\d+\.?\d*)\s*(kWh|MWh)/i);
+                    if (match) {
+                      setElectricityUsage(match[1]);
+                      setElectricityUnit(match[2].toLowerCase());
+                    }
+                    
+                    // TODO: Implement proper OCR using a dedicated service
+                    // Options:
+                    // 1. Google Cloud Vision API
+                    // 2. Tesseract.js for client-side OCR
+                    // 3. Azure Computer Vision
+                    
+                    // TODO: Replace with actual OCR implementation
+                    const text = "Total Amount Payable";
+                    
+                    // Simple parsing - enhance this based on actual response format
+                    const extractedMatch = text.match(/(\d+\.?\d*)\s*(kWh|MWh)/i);
+                    if (extractedMatch) {
+                      setElectricityUsage(extractedMatch[1]);
+                      setElectricityUnit(extractedMatch[2].toLowerCase());
+                    }
+                  };
+                  reader.readAsDataURL(file);
+                } catch (error) {
+                  console.error('Error processing image:', error);
+                } finally {
+                  setIsProcessing(false);
+                }
+              }
+            }}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-green-50 file:text-green-700
+              hover:file:bg-green-100"
+          />
+          {isProcessing && (
+            <p className="mt-2 text-sm text-gray-500">Processing bill...</p>
+          )}
+        </div>
         <form onSubmit={handleSubmit} className="flex flex-col">
 
           <div className="mb-4">
