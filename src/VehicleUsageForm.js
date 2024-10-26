@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './index.css'
 
-function ElectricityUsageForm() {
-  const [electricityUsage, setElectricityUsage] = useState('100');
-  const [electricityUnit, setElectricityUnit] = useState('kWh');
-  const [electricCarbonFootprint, setElectricCarbonFootprint] = useState(null);
+function VehicleUsageForm() {
+  const [distanceValue, setDistanceValue] = useState(0.0);
+  const [distanceUnit, setDistanceUnit] = useState('km');
+  const [vehicleCarbonFootprint, setVehicleCarbonFootprint] = useState(null);
   const navigate = useNavigate(); // useNavigate hook for navigation
+  const location = useLocation();
+  const { electricCarbonFootprint } = location.state || {};  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = {
-        type: "electricity",
-        electricity_value: parseInt(electricityUsage),
-        electricity_unit: electricityUnit,
-        country: "us"
+        type: "vehicle",
+        distance_unit: distanceUnit,
+        distance_value: parseFloat(distanceValue),
+        vehicle_model_id: "7268a9b7-17e8-4c8d-acca-57059252afe9"
     };
 
     try {
@@ -39,10 +42,12 @@ function ElectricityUsageForm() {
 
         if (result.data && result.data.attributes) {
             const carbonFootprint = result.data.attributes.carbon_mt;
-            setElectricCarbonFootprint(carbonFootprint);
+            setVehicleCarbonFootprint(carbonFootprint);
 
             // Navigate to the new page after form submission
-            navigate('/vehicle-usage', { state: { electricCarbonFootprint: carbonFootprint } });
+            navigate('/flight-usage', { state: { electricCarbonFootprint: electricCarbonFootprint,
+                vehicleCarbonFootprint: carbonFootprint
+             } });
         } else {
             console.error("Unexpected API response structure", result);
         }
@@ -53,22 +58,22 @@ function ElectricityUsageForm() {
 
   return (
     <div className="bg-inherit flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold mb-4">Electricity Usage</h1>
+      <h1 className="text-2xl font-bold mb-4">Vehicle Usage</h1>
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
-        <textarea
-          placeholder="Enter your electricity usage (e.g., 1000)"
-          value={electricityUsage}
-          onChange={(e) => setElectricityUsage(e.target.value)}
-          className="w-full p-4 border border-gray-300 rounded-md mb-4"
-        />
         <select
-          value={electricityUnit}
-          onChange={(e) => setElectricityUnit(e.target.value)}
+          value={distanceUnit}
+          onChange={(e) => setDistanceUnit(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-md"
         >
-          <option value="kWh">Kilowatt-hours (kWh)</option>
-          <option value="MWh">Megawatt-hours (MWh)</option>
+          <option value="km">Kilometers (Km)</option>
+          <option value="mi">Miles (Mi)</option>
         </select>
+        <textarea
+          placeholder="Enter distance travelled (e.g., 1000)"
+          value={distanceValue}
+          onChange={(e) => setDistanceValue(e.target.value)}
+          className="w-full p-4 border border-gray-300 rounded-md mb-4"
+        />
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -80,4 +85,4 @@ function ElectricityUsageForm() {
   );
 }
 
-export default ElectricityUsageForm;
+export default VehicleUsageForm;

@@ -5,7 +5,7 @@ function FlightUsageForm() {
   const [flightPassenger, setFlightPassenger] = useState('');
   const [flightCarbonFootprint, setFlightCarbonFootprint] = useState(null);
   const location = useLocation();
-  const { electricCarbonFootprint } = location.state || {};  // Access the passed state
+  const { electricCarbonFootprint, vehicleCarbonFootprint } = location.state || {};  // Access the passed state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ function FlightUsageForm() {
 
       {flightCarbonFootprint && (
         <div className="mt-4">
-          <p>Your estimated carbon footprint is: {flightCarbonFootprint + electricCarbonFootprint} MT CO2e</p>
+          <p>Your estimated carbon footprint is: {flightCarbonFootprint} + {electricCarbonFootprint} + {vehicleCarbonFootprint} MT CO2e</p>
         </div>
       )}
     </div>
